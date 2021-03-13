@@ -14,7 +14,10 @@ import io.cucumber.java.eo.Se;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
@@ -70,7 +73,7 @@ public class All_StepDefinitions implements BrowserUtils {
   @When("User is on {string} module")
   public void user_is_on_module(String module) {
     base_page.navLinksContainer.findElement(By.xpath(
-            ".//a[.//span[.='" + module + "']]"
+            ".//a[   .//span[.='" + module + "']    ]"
     )).click();
   }
 
@@ -112,7 +115,8 @@ public class All_StepDefinitions implements BrowserUtils {
 
   @When("User adds new User with valid info")
   public void user_adds_new_user_with_valid_info() {
-    sleep(1);
+    WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 2);
+    wait.until(ExpectedConditions.visibilityOf(users_module_page.inputNewFullName));
     newUserName = faker.name().fullName();
     users_module_page.inputNewFullName.sendKeys(
             newUserName
