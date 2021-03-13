@@ -62,4 +62,7 @@ public class Users_Module_Page extends Base_Page {
 
   @FindBy(xpath = "//table[@id='tbl_books']//tbody/tr[1]/td[5]")
   public WebElement bookCategoryFromTable;
+
+  @FindBy(id = "user_count")
+  public WebElement userCount;
 }

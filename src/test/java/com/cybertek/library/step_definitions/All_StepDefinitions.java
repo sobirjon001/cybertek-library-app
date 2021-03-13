@@ -5,16 +5,16 @@ import com.cybertek.library.pages.Login_Page;
 import com.cybertek.library.pages.Users_Module_Page;
 import com.cybertek.library.utilities.BrowserUtils;
 import com.cybertek.library.utilities.ConfigurationReader;
+import com.cybertek.library.utilities.DB_Utilities;
 import com.cybertek.library.utilities.Driver;
 import com.github.javafaker.Faker;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.cucumber.java.eo.Se;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -55,6 +55,10 @@ public class All_StepDefinitions implements BrowserUtils {
       case "librarian":
         userName = ConfigurationReader.getProperty("librarian13");
         password = ConfigurationReader.getProperty("librarian13Password");
+        break;
+      case "librarian1":
+        userName = ConfigurationReader.getProperty("librarian66");
+        password = ConfigurationReader.getProperty("librarian66Password");
         break;
     }
     login_page.inputEmail.sendKeys(userName);
@@ -211,5 +215,22 @@ public class All_StepDefinitions implements BrowserUtils {
     sleep(1);
     String actualCategory = users_module_page.bookCategoryFromTable.getText();
     Assert.assertEquals(expectedCategory, actualCategory);
+  }
+
+  @And("Database updated")
+  public void databaseUpdated() {
+    String url = ConfigurationReader.getProperty("library1.database.url");
+    String username = ConfigurationReader.getProperty("library1.database.username");
+    String password = ConfigurationReader.getProperty("library1.database.password");
+
+    DB_Utilities.createConnection(url, username, password);
+    DB_Utilities.runQuery("select count(*) from users");
+
+    String usersNum_DB = DB_Utilities.getFirstRowFirstColumn();
+    String usersNum_UI = users_module_page.userCount.getText();
+
+    DB_Utilities.destroy();
+    Assert.assertEquals(usersNum_UI, usersNum_DB);
+
   }
 }
