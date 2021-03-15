@@ -13,6 +13,7 @@ public class DB_Utilities {
   public static void createConnection(String url, String userName, String password) {
     try {
       con = DriverManager.getConnection(url, userName, password);
+      stm = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       System.out.println("Connection successful!");
     } catch (SQLException e) {
       System.out.println("Connection has FAILED! " + e.getMessage());
@@ -21,7 +22,6 @@ public class DB_Utilities {
 
   public static ResultSet runQuery(String sql) {
     try {
-      stm = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       rs = stm.executeQuery(sql);
       rsmd = rs.getMetaData();
     } catch (SQLException e) {
@@ -30,7 +30,7 @@ public class DB_Utilities {
     return rs;
   }
 
-  public static void destroy() {
+  public static void closeConnection() {
     // we have to check if we have valid object first before closing the resource
     // because we can't close object that don't exist
     try {

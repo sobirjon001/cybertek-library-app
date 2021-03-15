@@ -8,6 +8,7 @@ import com.cybertek.library.utilities.ConfigurationReader;
 import com.cybertek.library.utilities.DB_Utilities;
 import com.cybertek.library.utilities.Driver;
 import com.github.javafaker.Faker;
+import com.sun.xml.internal.ws.api.ha.StickyFeature;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -19,6 +20,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -219,18 +222,44 @@ public class All_StepDefinitions implements BrowserUtils {
 
   @And("Database updated")
   public void databaseUpdated() {
-    String url = ConfigurationReader.getProperty("library1.database.url");
-    String username = ConfigurationReader.getProperty("library1.database.username");
-    String password = ConfigurationReader.getProperty("library1.database.password");
 
-    DB_Utilities.createConnection(url, username, password);
     DB_Utilities.runQuery("select count(*) from users");
 
     String usersNum_DB = DB_Utilities.getFirstRowFirstColumn();
     String usersNum_UI = users_module_page.userCount.getText();
 
-    DB_Utilities.destroy();
     Assert.assertEquals(usersNum_UI, usersNum_DB);
 
+  }
+
+  @When("User finds book by name {string}")
+  public void user_finds_book_by_name(String bookName) {
+    users_module_page.inputSearch.sendKeys(bookName);
+    sleep(1);
+  }
+  @When("User picks book by Author {string}")
+  public void user_picks_book_by_author(String author) {
+    Driver.getDriver().findElement(By.xpath(
+            "//a[@class='btn btn-primary btn-sm  ' and ./../../td[.='" + author + "']]"
+    )).click();
+  }
+  @Then("Book name {string} Author {string} is added to Data Base of user {string}")
+  public void book_name_author_is_added_to_data_base_of_user(String bookName, String author, String userEmail) {
+    List<String> expectedBook = new ArrayList<>(Arrays.asList(bookName, author));
+    DB_Utilities.runQuery(
+      "select b.name, b.author " +
+              "from users u " +
+              "left outer join book_borrow bb on u.id = bb.user_id " +
+              "left outer join books b on bb.book_id = b.id " +
+              "where email = '" + userEmail +
+              "' and b.name = '" + bookName +
+              "' and bb.is_returned = '0';"
+    );
+
+    List<String> actualBook = DB_Utilities.getRowDataAsListByRowNumber(1);
+    System.out.println("expectedBook = " + expectedBook);
+    System.out.println("actualBook = " + actualBook);
+
+    Assert.assertEquals(expectedBook, actualBook);
   }
 }

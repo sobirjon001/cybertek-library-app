@@ -65,4 +65,7 @@ public class Users_Module_Page extends Base_Page {
 
   @FindBy(id = "user_count")
   public WebElement userCount;
+
+  @FindBy(xpath = "//input[@type='search']")
+  public WebElement inputSearch;
 }

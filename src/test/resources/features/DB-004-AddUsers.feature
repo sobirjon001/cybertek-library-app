@@ -2,7 +2,7 @@ Feature: 4. As a librarian, I should be able to add users from users page.
   1. add users with all valid info.
   2. compare UI and DB number of users are same -- end to end testing
 
-  @sql
+  @dbggg
   Scenario: Librarian is able to add users with all valid info.
     Given User is on Library login "qa1_url" page
     Given User login as a "librarian1"
