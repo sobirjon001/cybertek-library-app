@@ -1,4 +1,4 @@
-@wip
+
 Feature: 1. As a user, I should be able to login to the library app.
   As a User, I should be able to login
 

@@ -18,7 +18,7 @@ public interface BrowserUtils {
   }
 
   default WebElement waitForvisibility(WebElement webElement, int timeToWaitInSec){
-    WebDriverWait wait = new  WebDriverWait(Driver.getDriver(), 10);
+    WebDriverWait wait = new  WebDriverWait(Driver.getDriver(), timeToWaitInSec);
     return wait.until(ExpectedConditions.visibilityOf(webElement));
   }
 

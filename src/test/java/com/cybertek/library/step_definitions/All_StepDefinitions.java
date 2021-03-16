@@ -15,6 +15,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -220,7 +221,7 @@ public class All_StepDefinitions implements BrowserUtils {
     Assert.assertEquals(expectedCategory, actualCategory);
   }
 
-  @And("Database updated")
+  @Then("Database updated")
   public void databaseUpdated() {
 
     DB_Utilities.runQuery("select count(*) from users");
@@ -266,5 +267,39 @@ public class All_StepDefinitions implements BrowserUtils {
     System.out.println("actualBook = " + actualBook);
 
     Assert.assertEquals(expectedBook, actualBook);
+  }
+
+  @When("User finds student id {string}")
+  public void user_finds_student_id(String studentID) {
+    users_module_page.adjustOrder.click();
+    sleep(1);
+    users_module_page.inputSearch.sendKeys(studentID);
+    //sleep(1);
+    waitForvisibility(
+            Driver.getDriver().findElement(By.xpath("//td[.='"+ studentID +"']")), 1
+    );
+
+  }
+
+  @When("User change name to {string}")
+  public void user_change_name_to(String studentName) {
+    users_module_page.buttonEditFirstUser.click();
+    //sleep(1);
+    waitForvisibility(
+      users_module_page.inputEditUserName, 1
+    );
+    users_module_page.inputEditUserName.clear();
+    users_module_page.inputEditUserName.sendKeys(studentName);
+    users_module_page.buttonEditSubmit.click();
+  }
+  @Then("Database of student id {string} name is {string}")
+  public void database_of_student_id_name_is(String studentID, String expectedStudentName) {
+    sleep(1);
+    DB_Utilities.runQuery(
+            "select full_name from users where id = " + studentID + ";"
+    );
+    String actualStudentName = DB_Utilities.getFirstRowFirstColumn();
+
+    Assert.assertEquals(expectedStudentName, actualStudentName);
   }
 }

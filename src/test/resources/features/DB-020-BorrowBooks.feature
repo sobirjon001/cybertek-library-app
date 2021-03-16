@@ -1,6 +1,6 @@
 Feature: 1. As a Student I'm able to see borrowed books and DB updated
 
-  @db
+  @dbggg
   Scenario Outline: Students should have access to 2 modules
     Given User is on Library login "qa1_url" page
     And User login with credentials "<email>" and "<password>":
