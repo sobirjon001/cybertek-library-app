@@ -239,9 +239,14 @@ public class All_StepDefinitions implements BrowserUtils {
   }
   @When("User picks book by Author {string}")
   public void user_picks_book_by_author(String author) {
-    Driver.getDriver().findElement(By.xpath(
-            "//a[@class='btn btn-primary btn-sm  ' and ./../../td[.='" + author + "']]"
-    )).click();
+    WebElement buttonToBorrowBook = Driver.getDriver().findElement(By.xpath(
+            "//table[@id='tbl_books']//a[./../../td[.='" + author + "']]"
+    ));
+    if(!buttonToBorrowBook.getAttribute("class").contains("disabled")){
+      buttonToBorrowBook.click();
+    } else {
+      System.out.println("this book is borrowed already, skipping borrow action");
+    }
   }
   @Then("Book name {string} Author {string} is added to Data Base of user {string}")
   public void book_name_author_is_added_to_data_base_of_user(String bookName, String author, String userEmail) {

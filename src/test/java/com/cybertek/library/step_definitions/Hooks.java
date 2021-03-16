@@ -5,10 +5,21 @@ import com.cybertek.library.utilities.DB_Utilities;
 import com.cybertek.library.utilities.Driver;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 
 public class Hooks {
 
-  @After
+  @After(order = 1)
+  public void takeScreenShot(Scenario scenario){
+    if(scenario.isFailed()){
+      byte[] screenShot = ((TakesScreenshot) Driver.getDriver()).getScreenshotAs(OutputType.BYTES);
+      scenario.attach(screenShot, "image/png", scenario.getName());
+    }
+  }
+
+  @After(order = 2)
   public void closeDriver(){
     Driver.closeDriver();
   }
@@ -16,7 +27,6 @@ public class Hooks {
   @After(value = "@db")
   public void closeConnection(){
     DB_Utilities.closeConnection();
-    System.out.println("DB connection closed");
   }
 
   @Before(value = "@db")

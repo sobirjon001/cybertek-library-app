@@ -14,7 +14,7 @@ public class DB_Utilities {
     try {
       con = DriverManager.getConnection(url, userName, password);
       stm = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-      System.out.println("Connection successful!");
+      System.out.println("DB connection successful!");
     } catch (SQLException e) {
       System.out.println("Connection has FAILED! " + e.getMessage());
     }
@@ -37,6 +37,7 @@ public class DB_Utilities {
       if (rs != null) rs.close();
       if (stm != null) stm.close();
       if (con != null) con.close();
+      System.out.println("DB connection closed!");
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
