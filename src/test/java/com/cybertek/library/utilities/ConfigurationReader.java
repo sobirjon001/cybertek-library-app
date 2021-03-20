@@ -12,20 +12,20 @@ public class ConfigurationReader {
   private static Properties properties = new Properties();
 
   static {
-    //#2- Get the path and open the file
     try {
+      //#2- Get the path 
       FileInputStream file = new FileInputStream("configuration.properties");
-      //#3- Load the opened file into properties object
+      //#3- and open the file
       properties.load(file);
+      //#4- closing the file in JVM Memory
+      file.close();
     } catch (IOException e) {
-      e.printStackTrace();
+      System.out.println("Failed to read from configuration.properties " + e.getMessage());
     }
-    //closing the file in JVM Memory
   }
 
-  //#4- Use the object to read from the configuration.properties file
+  //#5- Use the object to read from the configuration.properties file
   public static String getProperty(String keyword) {
     return properties.getProperty(keyword);
   }
-
 }
