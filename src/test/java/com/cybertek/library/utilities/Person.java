@@ -1,4 +1,4 @@
-package com.cybertek.library.utilities.perosn;
+package com.cybertek.library.utilities;
 
 import com.github.javafaker.Faker;
 

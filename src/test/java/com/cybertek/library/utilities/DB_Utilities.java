@@ -23,14 +23,13 @@ public class DB_Utilities {
     }
   }
 
-  public ResultSet runQuery(String sql) {
+  public void runQuery(String sql) {
     try {
       rs = stm.executeQuery(sql);
       rsmd = rs.getMetaData();
     } catch (SQLException e) {
       System.out.println("Error occurred while running query " + e.getMessage());
     }
-    return rs;
   }
 
   public void closeConnection() {

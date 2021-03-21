@@ -7,7 +7,7 @@ import com.cybertek.library.utilities.BrowserUtils;
 import com.cybertek.library.utilities.ConfigurationReader;
 import com.cybertek.library.utilities.DB_Utilities;
 import com.cybertek.library.utilities.Driver;
-import com.cybertek.library.utilities.perosn.Person;
+import com.cybertek.library.utilities.Person;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class All_StepDefinitions implements BrowserUtils {
+public class All_StepDefinitions extends BrowserUtils {
 
   public Login_Page login_page = new Login_Page();
   public Base_Page base_page = new Base_Page();
@@ -282,7 +282,7 @@ public class All_StepDefinitions implements BrowserUtils {
     sleep(1);
     users_module_page.inputSearch.sendKeys(studentID);
     //sleep(1);
-    waitForvisibility(
+    waitForVisibilityOf(
             Driver.getDriver().findElement(By.xpath("//td[.='"+ studentID +"']")), 1
     );
 
@@ -292,7 +292,7 @@ public class All_StepDefinitions implements BrowserUtils {
   public void user_change_name_to(String studentName) {
     users_module_page.buttonEditFirstUser.click();
     //sleep(1);
-    waitForvisibility(
+    waitForVisibilityOf(
       users_module_page.inputEditUserName, 1
     );
     users_module_page.inputEditUserName.clear();

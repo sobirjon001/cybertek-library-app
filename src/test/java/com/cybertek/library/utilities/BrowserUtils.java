@@ -7,22 +7,22 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface BrowserUtils {
+public class BrowserUtils {
 
-  default void sleep(int seconds){
+  public void sleep(int seconds){
     try {
-      Thread.sleep(seconds * 1000);
+      Thread.sleep(seconds * 1000L);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
   }
 
-  default WebElement waitForvisibility(WebElement webElement, int timeToWaitInSec){
+  public void waitForVisibilityOf(WebElement webElement, int timeToWaitInSec){
     WebDriverWait wait = new  WebDriverWait(Driver.getDriver(), timeToWaitInSec);
-    return wait.until(ExpectedConditions.visibilityOf(webElement));
+    wait.until(ExpectedConditions.visibilityOf(webElement));
   }
 
-  default List<String> getElementsText(List<WebElement> list){
+  public List<String> getElementsText(List<WebElement> list){
     List<String> elementsTexts = new ArrayList<>();
     for (WebElement webElement : list) {
       elementsTexts.add(webElement.getText());
