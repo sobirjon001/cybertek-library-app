@@ -12,29 +12,29 @@ import org.openqa.selenium.TakesScreenshot;
 public class Hooks {
 
   @After(order = 1)
-  public void takeScreenShot(Scenario scenario){
-    if(scenario.isFailed()){
+  public void takeScreenShot(Scenario scenario) {
+    if (scenario.isFailed()) {
       byte[] screenShot = ((TakesScreenshot) Driver.getDriver()).getScreenshotAs(OutputType.BYTES);
       scenario.attach(screenShot, "image/png", scenario.getName());
     }
   }
 
   @After(order = 2)
-  public void closeDriver(){
+  public void closeDriver() {
     Driver.closeDriver();
   }
+//
+//  @After(value = "@db")
+//  public void closeConnection(){
+//    DB_Utilities.closeConnection();
+//  }
 
-  @After(value = "@db")
-  public void closeConnection(){
-    DB_Utilities.closeConnection();
-  }
-
-  @Before(value = "@db")
-  public void createConnection(){
-    String url = ConfigurationReader.getProperty("library1.database.url");
-    String username = ConfigurationReader.getProperty("library1.database.username");
-    String password = ConfigurationReader.getProperty("library1.database.password");
-
-    DB_Utilities.createConnection(url, username, password);
-  }
+//  @Before(value = "@db")
+//  public void createConnection(){
+//    String url = ConfigurationReader.getProperty("library1.database.url");
+//    String username = ConfigurationReader.getProperty("library1.database.username");
+//    String password = ConfigurationReader.getProperty("library1.database.password");
+//
+//    DB_Utilities.createConnection(url, username, password);
+//  }
 }

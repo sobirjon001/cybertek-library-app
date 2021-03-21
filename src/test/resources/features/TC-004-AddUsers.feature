@@ -9,7 +9,6 @@ Feature: 4. As a librarian, I should be able to add users from users page.
     Given User login as a "librarian"
     When User is on "Users" module
 
-  @now
   Scenario: Librarian is able to add users with all valid info.
     And User opened add new user form
     And User adds new User with valid info

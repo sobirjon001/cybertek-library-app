@@ -5,12 +5,15 @@ import java.util.*;
 
 public class DB_Utilities {
 
-  private static Connection con;
-  private static Statement stm;
-  private static ResultSet rs;
-  private static ResultSetMetaData rsmd;
+  private Connection con;
+  private Statement stm;
+  private ResultSet rs;
+  private ResultSetMetaData rsmd;
 
-  public static void createConnection(String url, String userName, String password) {
+  public void createConnection() {
+    String url = ConfigurationReader.getProperty("library1.database.url");
+    String userName = ConfigurationReader.getProperty("library1.database.username");
+    String password = ConfigurationReader.getProperty("library1.database.password");
     try {
       con = DriverManager.getConnection(url, userName, password);
       stm = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -20,7 +23,7 @@ public class DB_Utilities {
     }
   }
 
-  public static ResultSet runQuery(String sql) {
+  public ResultSet runQuery(String sql) {
     try {
       rs = stm.executeQuery(sql);
       rsmd = rs.getMetaData();
@@ -30,7 +33,7 @@ public class DB_Utilities {
     return rs;
   }
 
-  public static void closeConnection() {
+  public void closeConnection() {
     // we have to check if we have valid object first before closing the resource
     // because we can't close object that don't exist
     try {
@@ -44,7 +47,7 @@ public class DB_Utilities {
   }
 
   // find out row count
-  public static int getRowCount() {
+  public int getRowCount() {
     int rowCount = 0;
     try {
       rs.last();
@@ -58,7 +61,7 @@ public class DB_Utilities {
   }
 
   // find column count
-  public static int getColumnCount() {
+  public int getColumnCount() {
     int columnCount = 0;
     try {
       columnCount = rsmd.getColumnCount();
@@ -71,7 +74,7 @@ public class DB_Utilities {
   }
 
   // get all column names into a list object
-  public static List<String> getAllColumnNamesAsList() {
+  public List<String> getAllColumnNamesAsList() {
     List<String> columnNamesList = new ArrayList<>();
     int columnCount = getColumnCount();
     try {
@@ -86,7 +89,7 @@ public class DB_Utilities {
   }
 
   // get entire row of data according to row number
-  public static List<String> getRowDataAsListByRowNumber(int rowNumber) {
+  public List<String> getRowDataAsListByRowNumber(int rowNumber) {
     List<String> rowDataList = new ArrayList<>();
     int colCount = getColumnCount();
     try {
@@ -104,7 +107,7 @@ public class DB_Utilities {
   }
 
   // get the cell value at certain row certain column number
-  public static String getCellValue(int rowNum, int colIndex) {
+  public String getCellValue(int rowNum, int colIndex) {
     String cellValue = "";
     try {
       rs.absolute(rowNum);
@@ -118,7 +121,7 @@ public class DB_Utilities {
   }
 
   // get the cell value at certain row certain column name
-  public static String getCellValue(int rowNum, String colName) {
+  public String getCellValue(int rowNum, String colName) {
     String cellValue = "";
     try {
       rs.absolute(rowNum);
@@ -132,7 +135,7 @@ public class DB_Utilities {
   }
 
   // get entire column data as list according to column number
-  public static List<String> getColumnDataAsList(int colNumber) {
+  public List<String> getColumnDataAsList(int colNumber) {
     List<String> columnValuesList = new ArrayList<>();
     try {
       rs.beforeFirst(); // make sure the cursor is at before first location
@@ -149,7 +152,7 @@ public class DB_Utilities {
   }
 
   // get entire column data as list according to column name
-  public static List<String> getColumnDataAsList(String colName) {
+  public List<String> getColumnDataAsList(String colName) {
     List<String> columnValuesList = new ArrayList<>();
     try {
       rs.beforeFirst(); // make sure the cursor is at before first location
@@ -166,7 +169,7 @@ public class DB_Utilities {
   }
 
   // print entire data table
-  public static void displayAllData() {
+  public void displayAllData() {
     try {
       rs.beforeFirst(); // make sure the cursor is at before first location
       int colCount = getColumnCount();
@@ -186,7 +189,7 @@ public class DB_Utilities {
   }
 
   //reset cursor
-  public static void resetCursor() {
+  public void resetCursor() {
     try {
       rs.beforeFirst(); // reset the cursor to before first location
     } catch (SQLException e) {
@@ -195,7 +198,7 @@ public class DB_Utilities {
   }
 
   // get the row data along with column name as Map object
-  public static Map<String, String> getRowMap(int rowNumber) {
+  public Map<String, String> getRowMap(int rowNumber) {
     Map<String, String> rowMap = new LinkedHashMap<>();
     int colCount = getColumnCount();
     try {
@@ -214,7 +217,7 @@ public class DB_Utilities {
   }
 
   // get all rows as List of Map data
-  public static List<Map<String, String>> getAllRowsAsListOfMap() {
+  public List<Map<String, String>> getAllRowsAsListOfMap() {
     List<Map<String, String>> allRowsListOfMap = new ArrayList<>();
     int rowCount = getRowCount();
     for (int row = 1; row <= rowCount; row++) {
@@ -223,7 +226,7 @@ public class DB_Utilities {
     return allRowsListOfMap;
   }
 
-  public static void displayAllDataAsTable(String tableName) {
+  public void displayAllDataAsTable(String tableName) {
     try {
       int colCount = getColumnCount();
       int[] cellLength = new int[colCount];
@@ -262,7 +265,7 @@ public class DB_Utilities {
   }
 
   // Get First Cell Value at First row First Column
-  public static String getFirstRowFirstColumn(){
+  public String getFirstRowFirstColumn(){
     return getCellValue(1,1);
   }
 }

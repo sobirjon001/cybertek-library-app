@@ -1,4 +1,4 @@
-@all @now
+@all
 Feature: 10. user status feature
 
   Scenario: verify user status

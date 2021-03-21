@@ -34,7 +34,7 @@
                     <perCoreThreadCount>false</perCoreThreadCount>
                     <testFailureIgnore>true</testFailureIgnore>
                     <includes>
-                        <include>**/CukesRunner*.java</include>
+                        <include>**/SystemTestRunner.java</include>
                     </includes>
                 </configuration>
             </plugin>
@@ -51,8 +51,8 @@
                         </goals>
                         <configuration>
                             <projectName>Cucumber HTML Reports</projectName>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                            <inputDirectory>${project.build.directory}</inputDirectory>
+                            <outputDirectory>Reports</outputDirectory>
+                            <inputDirectory>Reports</inputDirectory>
                             <jsonFiles>
                                 <param>**/cucumber*.json</param>
                             </jsonFiles>

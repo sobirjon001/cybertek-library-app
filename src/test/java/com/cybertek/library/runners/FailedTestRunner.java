@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = "@target/return.txt",
+        features = "@Reports/return.txt",
         glue = "com/cybertek/library/step_definitions"
 )
 

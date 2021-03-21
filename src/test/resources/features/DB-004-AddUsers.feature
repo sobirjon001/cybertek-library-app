@@ -7,7 +7,7 @@ Feature: 4. As a librarian, I should be able to add users from users page.
     And User login as a "librarian1"
     And User is on "Users" module
 
-  @dbggg
+  @db @wip
   Scenario: Librarian is able to add users with all valid info.
     And User opened add new user form
     When User adds new User with valid info

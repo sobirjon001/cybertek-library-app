@@ -7,15 +7,12 @@ import com.cybertek.library.utilities.BrowserUtils;
 import com.cybertek.library.utilities.ConfigurationReader;
 import com.cybertek.library.utilities.DB_Utilities;
 import com.cybertek.library.utilities.Driver;
-import com.github.javafaker.Faker;
-import com.sun.xml.internal.ws.api.ha.StickyFeature;
-import io.cucumber.java.en.And;
+import com.cybertek.library.utilities.perosn.Person;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -31,8 +28,6 @@ public class All_StepDefinitions implements BrowserUtils {
   public Login_Page login_page = new Login_Page();
   public Base_Page base_page = new Base_Page();
   public Users_Module_Page users_module_page = new Users_Module_Page();
-  public Faker faker = new Faker();
-  public String newUserName = "";
   public WebElement dropdown;
 
   private String getCurrentPage(){
@@ -125,22 +120,22 @@ public class All_StepDefinitions implements BrowserUtils {
   public void user_adds_new_user_with_valid_info() {
     WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 2);
     wait.until(ExpectedConditions.visibilityOf(users_module_page.inputNewFullName));
-    newUserName = faker.name().fullName();
+    Person.setValues();
     users_module_page.inputNewFullName.sendKeys(
-            newUserName
+            Person.getFulName()
     );
     users_module_page.inputNewPassword.sendKeys(
-            faker.internet().password()
+            Person.getPassword()
     );
     users_module_page.inputNewEmail.sendKeys(
-            faker.internet().emailAddress()
+            Person.getEmail()
     );
     Select userGroup = new Select(users_module_page.dropdownNewUserGroup);
     userGroup.selectByVisibleText("Students");
     Select status = new Select(users_module_page.dropdownNewStatus);
     status.selectByVisibleText("ACTIVE");
     users_module_page.textareaNewAddress.sendKeys(
-            faker.address().fullAddress()
+            Person.getFulAddress()
     );
     sleep(1);
     users_module_page.buttonSubmit.click();
@@ -150,7 +145,7 @@ public class All_StepDefinitions implements BrowserUtils {
   public void new_user_is_added_or_updated_to_records_table() {
     sleep(1);
     String actualUserName = users_module_page.newUserNameFromTable.getText();
-    Assert.assertEquals(newUserName, actualUserName);
+    Assert.assertEquals(Person.getFulName(), actualUserName);
   }
 
   @When("User cancels adding new user")
@@ -169,9 +164,11 @@ public class All_StepDefinitions implements BrowserUtils {
   public void user_tries_to_edit_user_info() {
     users_module_page.buttonEdinUserFromTable.click();
     sleep(1);
-    newUserName = faker.name().fullName();
+    Person.setValues();
     users_module_page.inputEditUserName.clear();
-    users_module_page.inputEditUserName.sendKeys(newUserName);
+    users_module_page.inputEditUserName.sendKeys(
+            Person.getFulName()
+    );
     sleep(1);
     users_module_page.buttonEditSubmit.click();
   }
@@ -224,11 +221,18 @@ public class All_StepDefinitions implements BrowserUtils {
   @Then("Database updated")
   public void databaseUpdated() {
 
-    DB_Utilities.runQuery("select count(*) from users");
+    DB_Utilities db_utilities = new DB_Utilities();
 
-    String usersNum_DB = DB_Utilities.getFirstRowFirstColumn();
+    db_utilities.createConnection();
+
+    db_utilities.runQuery("select count(*) from users");
+
+    String usersNum_DB = db_utilities.getFirstRowFirstColumn();
     String usersNum_UI = users_module_page.userCount.getText();
+    System.out.println("usersNum_UI = " + usersNum_UI);
+    System.out.println("usersNum_DB = " + usersNum_DB);
 
+    db_utilities.closeConnection();
     Assert.assertEquals(usersNum_UI, usersNum_DB);
 
   }
@@ -249,10 +253,13 @@ public class All_StepDefinitions implements BrowserUtils {
       System.out.println("this book is borrowed already, skipping borrow action");
     }
   }
+
   @Then("Book name {string} Author {string} is added to Data Base of user {string}")
   public void book_name_author_is_added_to_data_base_of_user(String bookName, String author, String userEmail) {
+    DB_Utilities db_utilities = new DB_Utilities();
+    db_utilities.createConnection();
     List<String> expectedBook = new ArrayList<>(Arrays.asList(bookName, author));
-    DB_Utilities.runQuery(
+    db_utilities.runQuery(
       "select b.name, b.author " +
               "from users u " +
               "left outer join book_borrow bb on u.id = bb.user_id " +
@@ -262,10 +269,10 @@ public class All_StepDefinitions implements BrowserUtils {
               "' and bb.is_returned = '0';"
     );
 
-    List<String> actualBook = DB_Utilities.getRowDataAsListByRowNumber(1);
+    List<String> actualBook = db_utilities.getRowDataAsListByRowNumber(1);
     System.out.println("expectedBook = " + expectedBook);
     System.out.println("actualBook = " + actualBook);
-
+    db_utilities.closeConnection();
     Assert.assertEquals(expectedBook, actualBook);
   }
 
@@ -294,12 +301,14 @@ public class All_StepDefinitions implements BrowserUtils {
   }
   @Then("Database of student id {string} name is {string}")
   public void database_of_student_id_name_is(String studentID, String expectedStudentName) {
+    DB_Utilities db_utilities = new DB_Utilities();
+    db_utilities.createConnection();
     sleep(1);
-    DB_Utilities.runQuery(
+    db_utilities.runQuery(
             "select full_name from users where id = " + studentID + ";"
     );
-    String actualStudentName = DB_Utilities.getFirstRowFirstColumn();
-
+    String actualStudentName = db_utilities.getFirstRowFirstColumn();
+    db_utilities.closeConnection();
     Assert.assertEquals(expectedStudentName, actualStudentName);
   }
 }
