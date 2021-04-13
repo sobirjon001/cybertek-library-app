@@ -11,35 +11,33 @@ public class Driver {
 
   private Driver(){}
 
-  private static ThreadLocal<WebDriver> driverPool = new ThreadLocal<>();
+  private static WebDriver driver;
 
   public static WebDriver getDriver(){
 
-    if(driverPool.get() == null){
-
-      synchronized (Driver.class) {
+    if(driver == null){
 
         try {
           URL url = new URL("http://192.168.1.20:4444/wd/hub");
           DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
           desiredCapabilities.setBrowserName("chrome");
-          driverPool.set(new RemoteWebDriver(url, desiredCapabilities));
+          driver = new RemoteWebDriver(url, desiredCapabilities);
         } catch (Exception e) {
           e.printStackTrace();
         }
 
-        driverPool.get().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        driverPool.get().manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
-      }
 
-    }
-    return driverPool.get();
+      }
+    driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+    driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+
+    return driver;
   }
 
   public static void closeDriver(){
-    if(driverPool.get() != null){
-      driverPool.get().quit();
-      driverPool.remove();
+    if(driver != null){
+      driver.quit();
+      driver = null;
     }
   }
 }
