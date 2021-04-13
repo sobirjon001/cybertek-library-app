@@ -69,7 +69,7 @@ public class Users_Module_Page extends Base_Page {
   @FindBy(xpath = "//input[@type='search']")
   public WebElement inputSearch;
 
-  @FindBy(xpath = "//table[@id='tbl_users']//tr[1]/th[2]")
+  @FindBy(xpath = "//table[@id='tbl_users']//thead/tr[1]/th[2]")
   public WebElement adjustOrder;
 
   @FindBy(xpath = "//table[@id='tbl_users']//tr[1]/td[1]/a")
