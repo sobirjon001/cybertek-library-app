@@ -18,7 +18,7 @@ public class Driver {
     if(driver == null){
 
         try {
-          URL url = new URL("http://host:4444/wd/hub");
+          URL url = new URL("http://localhost:4444/wd/hub");
           DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
           desiredCapabilities.setBrowserName("chrome");
           driver = new RemoteWebDriver(url, desiredCapabilities);
