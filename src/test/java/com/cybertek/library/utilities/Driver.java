@@ -20,7 +20,7 @@ public class Driver {
       synchronized (Driver.class) {
 
         try {
-          URL url = new URL("http://localhost:4444/wd/hub");
+          URL url = new URL("http://192.168.1.20:4444/wd/hub");
           DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
           desiredCapabilities.setBrowserName("chrome");
           driverPool.set(new RemoteWebDriver(url, desiredCapabilities));
