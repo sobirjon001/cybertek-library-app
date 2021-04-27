@@ -5,17 +5,24 @@ import java.util.*;
 
 public class DB_Utilities {
 
-  private Connection con;
-  private Statement stm;
-  private ResultSet rs;
-  private ResultSetMetaData rsmd;
+  private static Connection con;
+  private static Statement stm;
+  private static ResultSet rs;
+  private static ResultSetMetaData rsmd;
 
-  public void createConnection() {
-    String url = ConfigurationReader.getProperty("library1.database.url");
-    String userName = ConfigurationReader.getProperty("library1.database.username");
-    String password = ConfigurationReader.getProperty("library1.database.password");
+  private static String DB_url;
+  private static String DB_userName;
+  private static String DB_password;
+
+  static {
+    DB_url = ConfigurationReader.getProperty("library1.database.url");
+    DB_userName = ConfigurationReader.getProperty("library1.database.username");
+    DB_password = ConfigurationReader.getProperty("library1.database.password");
+  }
+
+  public static void createConnection() {
     try {
-      con = DriverManager.getConnection(url, userName, password);
+      con = DriverManager.getConnection(DB_url, DB_userName, DB_password);
       stm = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       System.out.println("DB connection successful!");
     } catch (SQLException e) {
@@ -23,7 +30,7 @@ public class DB_Utilities {
     }
   }
 
-  public void runQuery(String sql) {
+  public static void runQuery(String sql) {
     try {
       rs = stm.executeQuery(sql);
       rsmd = rs.getMetaData();
@@ -32,7 +39,7 @@ public class DB_Utilities {
     }
   }
 
-  public void closeConnection() {
+  public static void closeConnection() {
     // we have to check if we have valid object first before closing the resource
     // because we can't close object that don't exist
     try {
@@ -46,7 +53,7 @@ public class DB_Utilities {
   }
 
   // find out row count
-  public int getRowCount() {
+  public static int getRowCount() {
     int rowCount = 0;
     try {
       rs.last();
@@ -60,7 +67,7 @@ public class DB_Utilities {
   }
 
   // find column count
-  public int getColumnCount() {
+  public static int getColumnCount() {
     int columnCount = 0;
     try {
       columnCount = rsmd.getColumnCount();
@@ -73,7 +80,7 @@ public class DB_Utilities {
   }
 
   // get all column names into a list object
-  public List<String> getAllColumnNamesAsList() {
+  public static List<String> getAllColumnNamesAsList() {
     List<String> columnNamesList = new ArrayList<>();
     int columnCount = getColumnCount();
     try {
@@ -88,7 +95,7 @@ public class DB_Utilities {
   }
 
   // get entire row of data according to row number
-  public List<String> getRowDataAsListByRowNumber(int rowNumber) {
+  public static List<String> getRowDataAsListByRowNumber(int rowNumber) {
     List<String> rowDataList = new ArrayList<>();
     int colCount = getColumnCount();
     try {
@@ -106,7 +113,7 @@ public class DB_Utilities {
   }
 
   // get the cell value at certain row certain column number
-  public String getCellValue(int rowNum, int colIndex) {
+  public static String getCellValue(int rowNum, int colIndex) {
     String cellValue = "";
     try {
       rs.absolute(rowNum);
@@ -120,7 +127,7 @@ public class DB_Utilities {
   }
 
   // get the cell value at certain row certain column name
-  public String getCellValue(int rowNum, String colName) {
+  public static String getCellValue(int rowNum, String colName) {
     String cellValue = "";
     try {
       rs.absolute(rowNum);
@@ -134,7 +141,7 @@ public class DB_Utilities {
   }
 
   // get entire column data as list according to column number
-  public List<String> getColumnDataAsList(int colNumber) {
+  public static List<String> getColumnDataAsList(int colNumber) {
     List<String> columnValuesList = new ArrayList<>();
     try {
       rs.beforeFirst(); // make sure the cursor is at before first location
@@ -151,7 +158,7 @@ public class DB_Utilities {
   }
 
   // get entire column data as list according to column name
-  public List<String> getColumnDataAsList(String colName) {
+  public static List<String> getColumnDataAsList(String colName) {
     List<String> columnValuesList = new ArrayList<>();
     try {
       rs.beforeFirst(); // make sure the cursor is at before first location
@@ -168,7 +175,7 @@ public class DB_Utilities {
   }
 
   // print entire data table
-  public void displayAllData() {
+  public static void displayAllData() {
     try {
       rs.beforeFirst(); // make sure the cursor is at before first location
       int colCount = getColumnCount();
@@ -188,7 +195,7 @@ public class DB_Utilities {
   }
 
   //reset cursor
-  public void resetCursor() {
+  public static void resetCursor() {
     try {
       rs.beforeFirst(); // reset the cursor to before first location
     } catch (SQLException e) {
@@ -197,7 +204,7 @@ public class DB_Utilities {
   }
 
   // get the row data along with column name as Map object
-  public Map<String, String> getRowMap(int rowNumber) {
+  public static Map<String, String> getRowMap(int rowNumber) {
     Map<String, String> rowMap = new LinkedHashMap<>();
     int colCount = getColumnCount();
     try {
@@ -216,7 +223,7 @@ public class DB_Utilities {
   }
 
   // get all rows as List of Map data
-  public List<Map<String, String>> getAllRowsAsListOfMap() {
+  public static List<Map<String, String>> getAllRowsAsListOfMap() {
     List<Map<String, String>> allRowsListOfMap = new ArrayList<>();
     int rowCount = getRowCount();
     for (int row = 1; row <= rowCount; row++) {
@@ -225,7 +232,7 @@ public class DB_Utilities {
     return allRowsListOfMap;
   }
 
-  public void displayAllDataAsTable(String tableName) {
+  public static void displayAllDataAsTable(String tableName) {
     try {
       int colCount = getColumnCount();
       int[] cellLength = new int[colCount];
@@ -264,7 +271,7 @@ public class DB_Utilities {
   }
 
   // Get First Cell Value at First row First Column
-  public String getFirstRowFirstColumn(){
+  public static String getFirstRowFirstColumn(){
     return getCellValue(1,1);
   }
 }
